@@ -86,16 +86,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //初始化
+        new Thread(() -> {
+            //初始化
 
-                Fido2DirectReInfo fido2DirectReInfo = Fido2DirectManager.getInstance().init(MainActivity.this);
-                if (fido2DirectReInfo.status == Fido2DirectStatus.SUCCESS) {
-                    Fido2DirectManager.getInstance().initAppInfo(null, null, RPID);
-                    // fido2Support = true;
-                }
+            Fido2DirectReInfo fido2DirectReInfo = Fido2DirectManager.getInstance().init(MainActivity.this);
+            if (fido2DirectReInfo.status == Fido2DirectStatus.SUCCESS) {
+                Fido2DirectManager.getInstance().initAppInfo(null, RPID);
+                // fido2Support = true;
             }
         }).start();
 

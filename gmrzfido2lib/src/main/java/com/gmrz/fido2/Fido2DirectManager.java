@@ -8,53 +8,62 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 
 import com.gmrz.fido2.impl.ClientApi;
 import com.gmrz.fido2.impl.ClientException;
 import com.gmrz.fido2.impl.hw.HwClient;
-import com.gmrz.fido2.param.client.AuthenticatorAssertionResponse;
-import com.gmrz.fido2.param.client.AuthenticatorAttestationResponse;
-import com.gmrz.fido2.param.client.ClientStatus;
-import com.gmrz.fido2.param.client.PublicKeyCredentialCreationOptions;
-import com.gmrz.fido2.param.client.PublicKeyCredentialRequestOptions;
-import com.gmrz.fido2.param.model.Algorithm;
-import com.gmrz.fido2.param.model.Attachment;
-import com.gmrz.fido2.param.model.AuthenticatorSelectionCriteria;
-import com.gmrz.fido2.param.model.AuthenticatorTransport;
-import com.gmrz.fido2.param.model.PublicKeyCredentialDescriptor;
-import com.gmrz.fido2.param.model.PublicKeyCredentialParameters;
-import com.gmrz.fido2.param.model.PublicKeyCredentialRpEntity;
-import com.gmrz.fido2.param.model.PublicKeyCredentialType;
-import com.gmrz.fido2.param.model.PublicKeyCredentialUserEntity;
-import com.gmrz.fido2.param.net.gmserver.Device;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnAuthReceiveRequest;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnAuthReceiveResponse;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnAuthSendRequest;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnAuthSendResponse;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnDel;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnDelResponse;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnRegReceiveRequest;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnRegReceiveResponse;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnRegSendRequest;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnRegSendResponse;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnRegStatus;
-import com.gmrz.fido2.param.net.gmserver.GmWebauthnRegStatusResponse;
-import com.gmrz.fido2.param.net.idl.ServerPublicKeyCredentialDescriptor;
-import com.gmrz.fido2.param.net.idl.ServerPublicKeyCredentialParameters;
-import com.gmrz.fido2.param.net.idl.ServerPublicKeyCredentialCreationOptionsResponse;
-import com.gmrz.fido2.param.net.request.AssertionResultRequest;
-import com.gmrz.fido2.param.net.request.AssertionResultResponseRequest;
-import com.gmrz.fido2.param.net.request.AttestationResultRequest;
-import com.gmrz.fido2.param.net.request.AttestationResultResponseRequest;
+import com.gmrz.fido2.net.gmserver.Device;
+import com.gmrz.fido2.net.gmserver.GmWebauthnAuthReceiveRequest;
+import com.gmrz.fido2.net.gmserver.GmWebauthnAuthReceiveResponse;
+import com.gmrz.fido2.net.gmserver.GmWebauthnAuthSendRequest;
+import com.gmrz.fido2.net.gmserver.GmWebauthnAuthSendResponse;
+import com.gmrz.fido2.net.gmserver.GmWebauthnDel;
+import com.gmrz.fido2.net.gmserver.GmWebauthnDelResponse;
+import com.gmrz.fido2.net.gmserver.GmWebauthnRegReceiveRequest;
+import com.gmrz.fido2.net.gmserver.GmWebauthnRegReceiveResponse;
+import com.gmrz.fido2.net.gmserver.GmWebauthnRegSendRequest;
+import com.gmrz.fido2.net.gmserver.GmWebauthnRegSendResponse;
+import com.gmrz.fido2.net.gmserver.GmWebauthnRegStatus;
+import com.gmrz.fido2.net.gmserver.GmWebauthnRegStatusResponse;
+import com.gmrz.fido2.net.idl.ServerPublicKeyCredentialCreationOptionsResponse;
+import com.gmrz.fido2.net.idl.ServerPublicKeyCredentialDescriptor;
+import com.gmrz.fido2.net.idl.ServerPublicKeyCredentialParameters;
+import com.gmrz.fido2.net.request.AssertionResultRequest;
+import com.gmrz.fido2.net.request.AssertionResultResponseRequest;
+import com.gmrz.fido2.net.request.AttestationResultRequest;
+import com.gmrz.fido2.net.request.AttestationResultResponseRequest;
+import com.gmrz.fido2.utils.ByteUtils;
 import com.gmrz.fido2.utils.HttpDirectUtil;
 import com.gmrz.fido2.utils.Logger;
 import com.google.gson.Gson;
+import com.huawei.hms.support.api.fido.fido2.Algorithm;
+import com.huawei.hms.support.api.fido.fido2.Attachment;
+import com.huawei.hms.support.api.fido.fido2.AuthenticatorAssertionResponse;
+import com.huawei.hms.support.api.fido.fido2.AuthenticatorAttestationResponse;
+import com.huawei.hms.support.api.fido.fido2.AuthenticatorSelectionCriteria;
+import com.huawei.hms.support.api.fido.fido2.AuthenticatorTransport;
+import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialCreationOptions;
+import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialDescriptor;
+import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialParameters;
+import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialRequestOptions;
+import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialRpEntity;
+import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialType;
+import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialUserEntity;
+import com.huawei.hms.support.api.fido.fido2.UserVerificationRequirement;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+// import com.gmrz.fido2.param.client.AuthenticatorAttestationResponse;
+// import com.gmrz.fido2.param.net.request.AttestationResultResponseRequest;
+
+// import com.gmrz.fido2.param.net.idl.ServerPublicKeyCredentialCreationOptionsResponse;
 
 public class Fido2DirectManager {
 
@@ -158,22 +167,17 @@ public class Fido2DirectManager {
         // step1: -----------------
         // send request to server for first request
         GmWebauthnRegReceiveRequest receiveRequest = new GmWebauthnRegReceiveRequest();
-        //receiveRequest.accessToken = accessToken;
 
         receiveRequest.context = new GmWebauthnRegReceiveRequest.Context();
+        receiveRequest.context.appID = "1103";
         receiveRequest.context.protocol = "web";
         receiveRequest.context.authType = "30";
         receiveRequest.context.transNo = transNo;
         receiveRequest.context.transType = "00";
         receiveRequest.context.userName = userName;
+
         receiveRequest.context.devices = new Device();
         receiveRequest.context.devices.deviceID = DEFAULT_DEVICEID;
-        receiveRequest.context.rpId = retrieveRpId(activity);
-        receiveRequest.context.attestation = "none";
-        receiveRequest.context.appID = "1103";
-
-        // receiveRequest.context.authenticatorAttachment = "cross-platform";
-        // receiveRequest.context.authenticatorAttachment = "platform";
 
         String receiveRequestStr = gson.toJson(receiveRequest);
 
@@ -200,71 +204,145 @@ public class Fido2DirectManager {
         // step2: ---------------------
         // send request to client
         ServerPublicKeyCredentialCreationOptionsResponse webauthnRequest = receiveResponse.webAuthnRequest.options;
-        //convert from server to fido2 api
+        // convert from server to fido2 api
         PublicKeyCredentialCreationOptions.Builder builder = new PublicKeyCredentialCreationOptions.Builder();
 
         // rp
-        PublicKeyCredentialRpEntity rpEntity = new PublicKeyCredentialRpEntity();
-        rpEntity.name = webauthnRequest.getRp().getName();
-        rpEntity.id = webauthnRequest.getRp().getId();
+        String rpId = webauthnRequest.getRp().getId();
+        String rpName = webauthnRequest.getRp().getName();
+
+        PublicKeyCredentialRpEntity rpEntity = new PublicKeyCredentialRpEntity(rpId, rpName, rpName);
         builder.setRp(rpEntity);
 
         // user
-        PublicKeyCredentialUserEntity userEntity = new PublicKeyCredentialUserEntity();
-        userEntity.id = webauthnRequest.getUser().getId().getBytes();
-        userEntity.name = webauthnRequest.getUser().getId();
-        userEntity.displayName = webauthnRequest.getUser().getDisplayName();
-        builder.setUser(userEntity);
+        // PublicKeyCredentialUserEntity userEntity = new PublicKeyCredentialUserEntity();
+        // userEntity.id = webauthnRequest.getUser().getId().getBytes();
+        // userEntity.name = webauthnRequest.getUser().getId();
+        // userEntity.displayName = webauthnRequest.getUser().getDisplayName();
+        // builder.setUser(userEntity);
+
+        // user
+
+        builder.setUser(new PublicKeyCredentialUserEntity(rpId, rpId.getBytes(StandardCharsets.UTF_8)));
+
 
         // challenge
         builder.setChallenge(Base64.decode(webauthnRequest.getChallenge(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP));
 
         // parameters
+        // if (webauthnRequest.getPubKeyCredParams() != null) {
+        //     List<PublicKeyCredentialParameters> parameters = new ArrayList<>();
+        //     ServerPublicKeyCredentialParameters[] serverParamsters = webauthnRequest.getPubKeyCredParams();
+        //     for (ServerPublicKeyCredentialParameters serverParameter : serverParamsters) {
+        //         PublicKeyCredentialParameters parameter = new PublicKeyCredentialParameters();
+        //         parameter.alg = Algorithm.decode(serverParameter.getAlg());
+        //         if (parameter.alg == Algorithm.ES256 || parameter.alg == Algorithm.PS256) {
+        //             parameter.type = PublicKeyCredentialType.PUBLIC_KEY;
+        //             parameters.add(parameter);
+        //         }
+        //     }
+        //     builder.setParameters(parameters);
+        // }
+
+        // parameters
         if (webauthnRequest.getPubKeyCredParams() != null) {
             List<PublicKeyCredentialParameters> parameters = new ArrayList<>();
-            ServerPublicKeyCredentialParameters[] serverParamsters = webauthnRequest.getPubKeyCredParams();
-            for (ServerPublicKeyCredentialParameters serverParameter : serverParamsters) {
-                PublicKeyCredentialParameters parameter = new PublicKeyCredentialParameters();
-                parameter.alg = Algorithm.decode(serverParameter.getAlg());
-                if (parameter.alg == Algorithm.ES256 || parameter.alg == Algorithm.PS256) {
-                    parameter.type = PublicKeyCredentialType.PUBLIC_KEY;
+            ServerPublicKeyCredentialParameters[] serverPublicKeyCredentialParameters = webauthnRequest.getPubKeyCredParams();
+            for (ServerPublicKeyCredentialParameters param : serverPublicKeyCredentialParameters) {
+                try {
+                    PublicKeyCredentialParameters parameter = new PublicKeyCredentialParameters(PublicKeyCredentialType.PUBLIC_KEY, Algorithm.fromCode(param.getAlg()));
                     parameters.add(parameter);
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
                 }
             }
-            builder.setParameters(parameters);
+            builder.setPubKeyCredParams(parameters);
         }
 
         // excludeList
+        // if (webauthnRequest.getExcludeCredentials() != null) {
+        //     List<PublicKeyCredentialDescriptor> parameters = new ArrayList<>();
+        //     ServerPublicKeyCredentialDescriptor[] excludes = webauthnRequest.getExcludeCredentials();
+        //     for (ServerPublicKeyCredentialDescriptor exclude : excludes) {
+        //         PublicKeyCredentialDescriptor parameter = new PublicKeyCredentialDescriptor();
+        //         parameter.id = Base64.decode(exclude.getId(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
+        //         parameter.transports = new ArrayList<>();
+        //         if (exclude.getTransports() != null) {
+        //             parameter.transports.add(AuthenticatorTransport.decode(exclude.getTransports()));
+        //         }
+        //         parameter.type = PublicKeyCredentialType.PUBLIC_KEY;
+        //         parameters.add(parameter);
+        //     }
+        //     builder.setExcludeList(parameters);
+        // }
+
         if (webauthnRequest.getExcludeCredentials() != null) {
-            List<PublicKeyCredentialDescriptor> parameters = new ArrayList<>();
-            ServerPublicKeyCredentialDescriptor[] excludes = webauthnRequest.getExcludeCredentials();
-            for (ServerPublicKeyCredentialDescriptor exclude : excludes) {
-                PublicKeyCredentialDescriptor parameter = new PublicKeyCredentialDescriptor();
-                parameter.id = Base64.decode(exclude.getId(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
-                parameter.transports = new ArrayList<>();
-                if (exclude.getTransports() != null) {
-                    parameter.transports.add(AuthenticatorTransport.decode(exclude.getTransports()));
+            List<com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialDescriptor> descriptors = new ArrayList<>();
+            ServerPublicKeyCredentialDescriptor[] serverDescriptors = webauthnRequest.getExcludeCredentials();
+            for (ServerPublicKeyCredentialDescriptor desc : serverDescriptors) {
+                ArrayList<AuthenticatorTransport> transports = new ArrayList<>();
+                if (desc.getTransports() != null) {
+                    try {
+                        transports.add(AuthenticatorTransport.fromValue(desc.getTransports()));
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
                 }
-                parameter.type = PublicKeyCredentialType.PUBLIC_KEY;
-                parameters.add(parameter);
+
+                PublicKeyCredentialDescriptor descriptor = new PublicKeyCredentialDescriptor(PublicKeyCredentialType.PUBLIC_KEY, ByteUtils.base642Byte(desc.getId()), transports);
+                descriptors.add(descriptor);
             }
-            builder.setExcludeList(parameters);
+            builder.setExcludeList(descriptors);
         }
 
         // selection
         // Attachment attachment = Attachment.CROSS_PLATFORM;
-        Attachment attachment = Attachment.PLATFORM;
-        AuthenticatorSelectionCriteria selector = new AuthenticatorSelectionCriteria(attachment, null, null);
-        builder.setAuthenticatorSelection(selector);
+        // Attachment attachment = Attachment.PLATFORM;
+        // AuthenticatorSelectionCriteria selector = new AuthenticatorSelectionCriteria(attachment, null, null);
+        // builder.setAuthenticatorSelection(selector);
+
+        Attachment attachment = null;
+        attachment = Attachment.PLATFORM; // TODO ..... 下面解析赋值失败了 需要检查为什么 ....
+
+        if (webauthnRequest.getAuthenticatorSelection() != null) {
+
+            AuthenticatorSelectionCriteria selectionCriteria = webauthnRequest.getAuthenticatorSelection();
+            if (selectionCriteria.getAuthenticatorAttachment() != null) {
+                try {
+                    attachment = selectionCriteria.getAuthenticatorAttachment();
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
+            }
+
+            Boolean residentKey = selectionCriteria.isRequireResidentKey();
+
+            UserVerificationRequirement requirement = null;
+            if (selectionCriteria.getUserVerification() != null) {
+                try {
+                    requirement = selectionCriteria.getUserVerification();
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
+            }
+
+            AuthenticatorSelectionCriteria fido2Selection = new AuthenticatorSelectionCriteria(attachment, residentKey, requirement);
+            builder.setAuthenticatorSelection(fido2Selection);
+        }
 
         // extensions
         if (webauthnRequest.getExtensions() != null) {
-            builder.setAuthenticationExtensions(webauthnRequest.getExtensions());
+            // builder.setAuthenticationExtensions(webauthnRequest.getExtensions());
+            builder.setExtensions(webauthnRequest.getExtensions());
         }
+
+        // timeout
+        builder.setTimeoutSeconds(webauthnRequest.getTimeout());
 
         PublicKeyCredentialCreationOptions clientRequest = builder.build();
         Logger.d(TAG, "client reg options:" + gson.toJson(clientRequest));
-        AuthenticatorAttestationResponse clientResponse = null;
+
+        AuthenticatorAttestationResponse clientResponse;
 
         try {
             clientResponse = clientApi.reg(activity, clientRequest);
@@ -274,11 +352,13 @@ public class Fido2DirectManager {
 
             if (e.getStatus() > ClientException.ERR_CLIENT_START) {
                 int clientRealStatus = e.getStatus() - ClientException.ERR_CLIENT_START;
-                if (clientRealStatus == ClientStatus.CANCEL) {
+                // ClientStatus.CANCEL = 0x0003;
+                if (clientRealStatus == 0x0003) {
                     fidoReInfo.status = Fido2DirectStatus.CANCEL;
                 } else {
                     fidoReInfo.status = Fido2DirectStatus.FAILED;
                 }
+
             } else {
                 fidoReInfo.status = Fido2DirectStatus.FAILED;
             }
@@ -288,7 +368,6 @@ public class Fido2DirectManager {
         // step3:
         // send request
         GmWebauthnRegSendRequest sendRequest = new GmWebauthnRegSendRequest();
-        // sendRequest.accessToken = accessToken;
         sendRequest.context = new GmWebauthnRegSendRequest.Context();
         sendRequest.context.protocol = "web";
         sendRequest.context.authType = "30";
@@ -306,6 +385,8 @@ public class Fido2DirectManager {
 
         sendRequest.credentials = new AttestationResultRequest();
         AttestationResultResponseRequest attestationResponse = new AttestationResultResponseRequest();
+
+
         attestationResponse.setAttestationObject(Base64.encodeToString(clientResponse.getAttestationObject(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP));
         attestationResponse.setClientDataJSON(Base64.encodeToString(clientResponse.getClientDataJson(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP));
         sendRequest.credentials.setResponse(attestationResponse);
@@ -349,10 +430,12 @@ public class Fido2DirectManager {
         Logger.d(TAG, "auth userName:" + userName + " transNo:" + transNo);
         Fido2DirectReInfo fidoReInfo = new Fido2DirectReInfo();
         fidoReInfo.status = Fido2DirectStatus.ERROR;
+
         if (Looper.myLooper() == Looper.getMainLooper()) {
             fidoReInfo.status = Fido2DirectStatus.MAIN_THREAD_ERROR;
             return fidoReInfo;
         }
+
         if (clientApi == null) {
             // return with not support
             fidoReInfo.status = Fido2DirectStatus.NOT_SUPPORT;
@@ -360,7 +443,6 @@ public class Fido2DirectManager {
         }
 
         GmWebauthnAuthReceiveRequest receiveRequest = new GmWebauthnAuthReceiveRequest();
-        receiveRequest.userKey = retrieveUserkey(activity);
         receiveRequest.context = new GmWebauthnAuthReceiveRequest.Context();
         receiveRequest.context.protocol = "web";
         receiveRequest.context.authType = new String[]{"30"};
@@ -369,7 +451,6 @@ public class Fido2DirectManager {
         receiveRequest.context.userName = userName;
         receiveRequest.context.devices = new Device();
         receiveRequest.context.devices.deviceID = DEFAULT_DEVICEID;
-        receiveRequest.context.rpId = retrieveRpId(activity);
         receiveRequest.context.appID = "1103";
 
         String receiveRequestStr = gson.toJson(receiveRequest);
@@ -383,36 +464,71 @@ public class Fido2DirectManager {
             fidoReInfo.status = Fido2DirectStatus.SERVER_ERROR;
             return fidoReInfo;
         }
-        GmWebauthnAuthReceiveResponse serverPublicKeyCredentialCreationOptionsResponse = gson.fromJson(receiveResponseStr, GmWebauthnAuthReceiveResponse.class);
-        String serverData = serverPublicKeyCredentialCreationOptionsResponse.webAuthnRequest.serverData;
-        ServerPublicKeyCredentialCreationOptionsResponse webauthnRequest = serverPublicKeyCredentialCreationOptionsResponse.webAuthnRequest.options;
+
+        GmWebauthnAuthReceiveResponse gmWebauthnAuthReceiveResponse = gson.fromJson(receiveResponseStr, GmWebauthnAuthReceiveResponse.class);
+        String serverData = gmWebauthnAuthReceiveResponse.webAuthnRequest.serverData;
+
+        ServerPublicKeyCredentialCreationOptionsResponse webauthnRequest = gmWebauthnAuthReceiveResponse.webAuthnRequest.options;
+
+        // TODO .... 更换华为SDK的类
         PublicKeyCredentialRequestOptions.Builder builder = new PublicKeyCredentialRequestOptions.Builder();
-        //rpid
+
+        // rpid
         builder.setRpId(webauthnRequest.getRpId());
-        //challenge
+
+        // challenge
         builder.setChallenge(Base64.decode(webauthnRequest.getChallenge(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP));
-        //allowlist
-        if (webauthnRequest.getAllowCredentials() != null) {
-            List<PublicKeyCredentialDescriptor> parameters = new ArrayList<>();
-            ServerPublicKeyCredentialDescriptor[] allows = webauthnRequest.getAllowCredentials();
-            for (ServerPublicKeyCredentialDescriptor allow : allows) {
-                PublicKeyCredentialDescriptor parameter = new PublicKeyCredentialDescriptor();
-                parameter.id = Base64.decode(allow.getId(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
-                parameter.transports = new ArrayList<>();
-                if (allow.getTransports() != null) {
-                    parameter.transports.add(AuthenticatorTransport.decode(allow.getTransports()));
+
+        // allow list
+        // if (webauthnRequest.getAllowCredentials() != null) {
+        //     List<PublicKeyCredentialDescriptor> parameters = new ArrayList<>();
+        //     ServerPublicKeyCredentialDescriptor[] allows = webauthnRequest.getAllowCredentials();
+        //     for (ServerPublicKeyCredentialDescriptor allow : allows) {
+        //         PublicKeyCredentialDescriptor parameter = new PublicKeyCredentialDescriptor();
+        //         parameter.id = Base64.decode(allow.getId(), Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
+        //         parameter.transports = new ArrayList<>();
+        //         if (allow.getTransports() != null) {
+        //             parameter.transports.add(AuthenticatorTransport.decode(allow.getTransports()));
+        //         }
+        //         parameter.type = PublicKeyCredentialType.PUBLIC_KEY;
+        //         parameters.add(parameter);
+        //     }
+        //     builder.setAllowList(parameters);
+        // }
+
+        ServerPublicKeyCredentialDescriptor[] descriptors = webauthnRequest.getAllowCredentials();
+        if (descriptors != null) {
+            List<PublicKeyCredentialDescriptor> descriptorList = new ArrayList<>();
+            for (ServerPublicKeyCredentialDescriptor descriptor : descriptors) {
+                ArrayList<AuthenticatorTransport> transports = new ArrayList<>();
+                if (descriptor.getTransports() != null) {
+                    try {
+                        transports.add(AuthenticatorTransport.fromValue(descriptor.getTransports()));
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
                 }
-                parameter.type = PublicKeyCredentialType.PUBLIC_KEY;
-                parameters.add(parameter);
+                PublicKeyCredentialDescriptor desc = new PublicKeyCredentialDescriptor(PublicKeyCredentialType.PUBLIC_KEY, ByteUtils.base642Byte(descriptor.getId()), transports);
+                descriptorList.add(desc);
             }
-            builder.setAllowList(parameters);
+            builder.setAllowList(descriptorList);
         }
-        //extensions
+
+        // extensions
+        HashMap<String, Object> extensions = new HashMap<>();
         if (webauthnRequest.getExtensions() != null) {
-            builder.setAuthenticationExtensions(webauthnRequest.getExtensions());
+            // builder.setAuthenticationExtensions(webauthnRequest.getExtensions());
+            extensions.putAll(webauthnRequest.getExtensions());
         }
+
+        builder.setExtensions(extensions);
+
+        // timeout
+        builder.setTimeoutSeconds(webauthnRequest.getTimeout());
+
         PublicKeyCredentialRequestOptions clientRequest = builder.build();
         Logger.d(TAG, "auth client request:" + gson.toJson(clientRequest));
+
         AuthenticatorAssertionResponse clientResponse = null;
         try {
             clientResponse = clientApi.auth(activity, clientRequest);
@@ -421,7 +537,8 @@ public class Fido2DirectManager {
             // return with err
             if (e.getStatus() > ClientException.ERR_CLIENT_START) {
                 int clientRealStatus = e.getStatus() - ClientException.ERR_CLIENT_START;
-                if (clientRealStatus == ClientStatus.CANCEL) {
+                // ClientStatus.CANCEL = 0x0003;
+                if (clientRealStatus == 0x0003) {
                     fidoReInfo.status = Fido2DirectStatus.CANCEL;
                 } else {
                     fidoReInfo.status = Fido2DirectStatus.FAILED;
@@ -431,9 +548,11 @@ public class Fido2DirectManager {
             }
             return fidoReInfo;
         }
+
         Logger.d(TAG, "auth client response:" + gson.toJson(clientResponse));
+
         GmWebauthnAuthSendRequest request = new GmWebauthnAuthSendRequest();
-        request.userKey = retrieveUserkey(activity);
+        // request.userKey = retrieveUserkey(activity);
         request.context = new GmWebauthnAuthSendRequest.Context();
         request.context.protocol = "web";
         request.context.authType = new String[]{"30"};
@@ -541,7 +660,7 @@ public class Fido2DirectManager {
         }
 
         GmWebauthnRegStatus request = new GmWebauthnRegStatus();
-        request.userKey = retrieveUserkey(activity);
+        // request.userKey = retrieveUserkey(activity);
         request.context = new GmWebauthnRegStatus.Context();
         request.context.authType = new String[]{"30"};
         request.context.transNo = transNo;
@@ -575,29 +694,11 @@ public class Fido2DirectManager {
     }
 
     private String url = null;
-    private String userKey = null;
     private String rpId = null;
 
-    public void initAppInfo(String url, String userKey, String rpId) {
+    public void initAppInfo(String url, String rpId) {
         this.url = url;
-        this.userKey = userKey;
         this.rpId = rpId;
-    }
-
-    private String retrieveUserkey(Context ctx) {
-        if (!TextUtils.isEmpty(userKey)) {
-            return userKey;
-        }
-        try {
-            PackageInfo info = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), PackageManager.GET_META_DATA);
-            Bundle bundle = info.applicationInfo.metaData;
-            String appkey = bundle.getString(META_WEBAUTHN_KEY);
-            Logger.d(TAG, "userkey:" + appkey);
-            return appkey;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private String retrieveUrl(Context ctx) {
@@ -636,7 +737,7 @@ public class Fido2DirectManager {
     private boolean isServerMessageValid(String serverMessage) {
         boolean retval = false;
         try {
-            int statusCode = ((Integer) new JSONObject(serverMessage).get("statusCode")).intValue();
+            int statusCode = (Integer) new JSONObject(serverMessage).get("statusCode");
             retval = statusCode == 1200;
         } catch (JSONException e) {
             Logger.e(TAG, e.getMessage());

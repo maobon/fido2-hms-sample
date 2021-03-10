@@ -2,7 +2,6 @@ package com.gmrz.fido2.impl.hw;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -16,8 +15,8 @@ import com.huawei.hms.support.api.fido.fido2.Fido2IntentCallback;
 import com.huawei.hms.support.api.fido.fido2.Fido2RegistrationRequest;
 import com.huawei.hms.support.api.fido.fido2.Fido2RegistrationResponse;
 import com.huawei.hms.support.api.fido.fido2.NativeFido2AuthenticationOptions;
+import com.huawei.hms.support.api.fido.fido2.NativeFido2Options;
 import com.huawei.hms.support.api.fido.fido2.NativeFido2RegistrationOptions;
-import com.huawei.hms.support.api.fido.fido2.OriginFormat;
 
 public class HwIntentHelperActivity extends Activity {
 
@@ -33,8 +32,8 @@ public class HwIntentHelperActivity extends Activity {
 
     private static final Object semaphore = new Object();
 
-    private static void lock(){
-        synchronized (semaphore){
+    private static void lock() {
+        synchronized (semaphore) {
             try {
                 semaphore.wait();
             } catch (InterruptedException e) {
@@ -43,43 +42,43 @@ public class HwIntentHelperActivity extends Activity {
         }
     }
 
-    private static void unlock(){
-        synchronized (semaphore){
+    private static void unlock() {
+        synchronized (semaphore) {
             semaphore.notify();
         }
     }
 
-    public static synchronized Fido2RegistrationResponse reg(Activity activity,Fido2RegistrationRequest request) throws HwException{
-        if(Looper.getMainLooper() == Looper.myLooper()){
-            Log.e(TAG,"can't run in main thread!");
-            throw new HwException(HwException.ERR_THREAD,null);
+    public static synchronized Fido2RegistrationResponse reg(Activity activity, Fido2RegistrationRequest request) throws HwException {
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            Log.e(TAG, "can't run in main thread!");
+            throw new HwException(HwException.ERR_THREAD, null);
         }
         Intent it = new Intent();
-        it.setClass(activity,HwIntentHelperActivity.class);
+        it.setClass(activity, HwIntentHelperActivity.class);
         HwIntentHelperActivity.regRequest = request;
         HwIntentHelperActivity.regResponse = null;
         HwIntentHelperActivity.hwException = null;
-        it.putExtra(EXTRA_REQUEST_TYPE,"reg");
+        it.putExtra(EXTRA_REQUEST_TYPE, "reg");
         activity.startActivity(it);
         lock();
-        if(hwException != null){
+        if (hwException != null) {
             throw hwException;
         }
         return regResponse;
     }
 
-    public static synchronized Fido2AuthenticationResponse auth(Activity activity,Fido2AuthenticationRequest request) throws HwException{
-        if(Looper.getMainLooper() == Looper.myLooper()){
-            Log.e(TAG,"can't run in main thread!");
-            throw new HwException(HwException.ERR_THREAD,null);
+    public static synchronized Fido2AuthenticationResponse auth(Activity activity, Fido2AuthenticationRequest request) throws HwException {
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            Log.e(TAG, "can't run in main thread!");
+            throw new HwException(HwException.ERR_THREAD, null);
         }
         Intent it = new Intent();
-        it.setClass(activity,HwIntentHelperActivity.class);
+        it.setClass(activity, HwIntentHelperActivity.class);
         HwIntentHelperActivity.authRequest = request;
-        it.putExtra(EXTRA_REQUEST_TYPE,"auth");
+        it.putExtra(EXTRA_REQUEST_TYPE, "auth");
         activity.startActivity(it);
         lock();
-        if(hwException != null){
+        if (hwException != null) {
             throw hwException;
         }
         return authResponse;
@@ -96,50 +95,71 @@ public class HwIntentHelperActivity extends Activity {
         fido2Client = Fido2.getFido2Client(this);
 
         String extraRegType = getIntent().getStringExtra(EXTRA_REQUEST_TYPE);
-        if("reg".equals(extraRegType)){
-//            fido2Client.getRegistrationIntent(regRequest, new NativeFido2RegistrationOptions(OriginFormat.ANDROID),
-            fido2Client.getRegistrationIntent(regRequest, NativeFido2RegistrationOptions.DEFAULT_OPTIONS,
+        if ("reg".equals(extraRegType)) {
+            // -------- 注册 -----------
+
+            // fido2Client.getRegistrationIntent(p1, p2, p3);
+            // TODO p2: NativeFido2RegistrationOptions.DEFAULT_OPTIONS .... 控制指纹窗口显示内容
+
+            // 刷指纹窗口 显示内容配置
+            NativeFido2RegistrationOptions.Builder builder = NativeFido2RegistrationOptions.builder();
+            NativeFido2Options.BiometricPromptInfo biometricPromptInfo = new NativeFido2Options.BiometricPromptInfo("国民认证 FIDO2", "注册:验证您的指纹");
+            builder.setBiometricPromptInfo(biometricPromptInfo);
+            NativeFido2RegistrationOptions registrationOptions = builder.build();
+            //
+
+            fido2Client.getRegistrationIntent(regRequest, registrationOptions,
                     new Fido2IntentCallback() {
                         @Override
                         public void onSuccess(Fido2Intent fido2Intent) {
                             // 通过Fido2Client.REGISTRATION_REQUEST，启动FIDO客户端注册流程。
                             fido2Intent.launchFido2Activity(HwIntentHelperActivity.this, Fido2Client.REGISTRATION_REQUEST);
                         }
+
                         @Override
                         public void onFailure(int errorCode, CharSequence errString) {
-                            Log.d(TAG,"reg intent get failed, errorCode:"+errorCode+" errString:"+errString);
+                            Log.d(TAG, "reg intent get failed, errorCode:" + errorCode + " errString:" + errString);
                             // return err
-                            hwException = new HwException(HwException.ERR_HW_START + errorCode,errString);
+                            hwException = new HwException(HwException.ERR_HW_START + errorCode, errString);
                             unlock();
                         }
                     });
-        }else if("auth".equals(extraRegType)){
-            fido2Client.getAuthenticationIntent(authRequest, new NativeFido2AuthenticationOptions(OriginFormat.ANDROID),
+
+        } else if ("auth".equals(extraRegType)) {
+            // -------- 认证 -----------
+
+            // fido2Client.getAuthenticationIntent(p1, p2, p3);
+            // TODO p2: NativeFido2RegistrationOptions.DEFAULT_OPTIONS .... 控制指纹窗口显示内容
+
+            // 刷指纹窗口 显示内容配置
+            NativeFido2AuthenticationOptions.Builder builder = NativeFido2AuthenticationOptions.builder();
+            NativeFido2Options.BiometricPromptInfo biometricPromptInfo = new NativeFido2Options.BiometricPromptInfo("国民认证 FIDO2", "认证:验证您的指纹");
+            builder.setBiometricPromptInfo(biometricPromptInfo);
+            NativeFido2AuthenticationOptions authenticationOptions = builder.build();
+            //
+
+            fido2Client.getAuthenticationIntent(authRequest, authenticationOptions,
                     new Fido2IntentCallback() {
                         @Override
                         public void onSuccess(Fido2Intent fido2Intent) {
                             // 通过Fido2Client.REGISTRATION_REQUEST，启动FIDO客户端注册流程。
                             fido2Intent.launchFido2Activity(HwIntentHelperActivity.this, Fido2Client.AUTHENTICATION_REQUEST);
                         }
+
                         @Override
                         public void onFailure(int errorCode, CharSequence errString) {
-                            Log.d(TAG,"auth intent get failed, errorCode:"+errorCode+" errString:"+errString);
+                            Log.d(TAG, "auth intent get failed, errorCode:" + errorCode + " errString:" + errString);
                             // return err
-                            hwException = new HwException(HwException.ERR_HW_START + errorCode,errString);
+                            hwException = new HwException(HwException.ERR_HW_START + errorCode, errString);
                             unlock();
                         }
                     });
-        }else{
-            Log.e(TAG,"unknown request type");
+        } else {
+            Log.e(TAG, "unknown request type");
             // return err
-            hwException = new HwException(HwException.ERR_UNKNOWN_REQUEST,null);
+            hwException = new HwException(HwException.ERR_UNKNOWN_REQUEST, null);
             unlock();
         }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -159,11 +179,11 @@ public class HwIntentHelperActivity extends Activity {
                     break;
 
                 default:
-                    hwException = new HwException(HwException.ERR_UNKNOWN,"unknown request");
+                    hwException = new HwException(HwException.ERR_UNKNOWN, "unknown request");
             }
-        }else{
+        } else {
             // return err
-            hwException = new HwException(HwException.ERR_UNKNOWN,"unknown request");
+            hwException = new HwException(HwException.ERR_UNKNOWN, "unknown request");
         }
 
         HwIntentHelperActivity.this.finish();
@@ -173,13 +193,9 @@ public class HwIntentHelperActivity extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Log.d(TAG,"user force back");
+        Log.d(TAG, "user force back");
+
         unlock();
     }
 
-    @Override
-    protected void onDestroy() {
-        Log.d(TAG, "onDestroy");
-        super.onDestroy();
-    }
 }

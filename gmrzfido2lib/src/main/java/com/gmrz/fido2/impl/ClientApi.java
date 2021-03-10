@@ -2,10 +2,13 @@ package com.gmrz.fido2.impl;
 
 import android.app.Activity;
 
-import com.gmrz.fido2.param.client.AuthenticatorAssertionResponse;
-import com.gmrz.fido2.param.client.AuthenticatorAttestationResponse;
-import com.gmrz.fido2.param.client.PublicKeyCredentialCreationOptions;
-import com.gmrz.fido2.param.client.PublicKeyCredentialRequestOptions;
+//import com.gmrz.fido2.param.client.AuthenticatorAssertionResponse;
+//import com.gmrz.fido2.param.client.AuthenticatorAttestationResponse;
+
+import com.huawei.hms.support.api.fido.fido2.AuthenticatorAssertionResponse;
+import com.huawei.hms.support.api.fido.fido2.AuthenticatorAttestationResponse;
+import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialCreationOptions;
+import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialRequestOptions;
 
 public interface ClientApi {
 

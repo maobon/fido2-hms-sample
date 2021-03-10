@@ -5,10 +5,9 @@ import android.util.Log;
 
 import com.gmrz.fido2.impl.ClientApi;
 import com.gmrz.fido2.impl.ClientException;
-import com.gmrz.fido2.param.client.AuthenticatorAssertionResponse;
-import com.gmrz.fido2.param.client.AuthenticatorAttestationResponse;
-import com.gmrz.fido2.utils.VerboseLogger;
 import com.google.gson.Gson;
+import com.huawei.hms.support.api.fido.fido2.AuthenticatorAssertionResponse;
+import com.huawei.hms.support.api.fido.fido2.AuthenticatorAttestationResponse;
 import com.huawei.hms.support.api.fido.fido2.Fido2;
 import com.huawei.hms.support.api.fido.fido2.Fido2AuthenticationRequest;
 import com.huawei.hms.support.api.fido.fido2.Fido2AuthenticationResponse;
@@ -18,23 +17,21 @@ import com.huawei.hms.support.api.fido.fido2.Fido2RegistrationResponse;
 import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialCreationOptions;
 import com.huawei.hms.support.api.fido.fido2.PublicKeyCredentialRequestOptions;
 
+
 public class HwClient implements ClientApi {
 
     private static final String TAG = "HwClient";
 
     private final Gson gson = new Gson();
 
-    // AuthenticatorAttestationResponse - gmrz
-    // AuthenticatorAssertionResponse - gmrz
 
     @Override
-    public AuthenticatorAttestationResponse reg(Activity activity, com.gmrz.fido2.param.client.PublicKeyCredentialCreationOptions options) throws ClientException {
+    public AuthenticatorAttestationResponse reg(Activity activity, PublicKeyCredentialCreationOptions options) throws ClientException {
         Log.d(TAG, "register start");
-        PublicKeyCredentialCreationOptions hwRequestOptions = gson.fromJson(gson.toJson(options), PublicKeyCredentialCreationOptions.class);
-        Log.d(TAG, "register options :" + gson.toJson(hwRequestOptions));
-        Fido2RegistrationRequest hwRequest = new Fido2RegistrationRequest(hwRequestOptions, null);
+        Fido2RegistrationRequest fido2RegistrationRequest = new Fido2RegistrationRequest(options, null);
+
         try {
-            Fido2RegistrationResponse registrationResponse = HwIntentHelperActivity.reg(activity, hwRequest);
+            Fido2RegistrationResponse registrationResponse = HwIntentHelperActivity.reg(activity, fido2RegistrationRequest);
             if (registrationResponse.isSuccess()) {
                 String responseData = gson.toJson(registrationResponse.getAuthenticatorAttestationResponse());
                 // VerboseLogger.print(TAG, "huawei fido2 client register response:" + responseData);
@@ -51,16 +48,16 @@ public class HwClient implements ClientApi {
     }
 
     @Override
-    public AuthenticatorAssertionResponse auth(Activity activity, com.gmrz.fido2.param.client.PublicKeyCredentialRequestOptions options) throws ClientException {
+    public AuthenticatorAssertionResponse auth(Activity activity, PublicKeyCredentialRequestOptions options) throws ClientException {
         Log.d(TAG, "auth start");
-        PublicKeyCredentialRequestOptions hwRequestOptions = gson.fromJson(gson.toJson(options), PublicKeyCredentialRequestOptions.class);
-        Fido2AuthenticationRequest hwRequest = new Fido2AuthenticationRequest(hwRequestOptions, null);
+        Fido2AuthenticationRequest fido2AuthenticationRequest = new Fido2AuthenticationRequest(options, null);
+
         try {
-            Fido2AuthenticationResponse authenticationResponse = HwIntentHelperActivity.auth(activity, hwRequest);
+            Fido2AuthenticationResponse authenticationResponse = HwIntentHelperActivity.auth(activity, fido2AuthenticationRequest);
             if (authenticationResponse.isSuccess()) {
                 String responseData = gson.toJson(authenticationResponse.getAuthenticatorAssertionResponse());
                 // VerboseLogger.print(TAG, "huawei fido2 client auth response:" + responseData);
-                AuthenticatorAssertionResponse response = gson.fromJson(responseData, com.gmrz.fido2.param.client.AuthenticatorAssertionResponse.class);
+                AuthenticatorAssertionResponse response = gson.fromJson(responseData, AuthenticatorAssertionResponse.class);
                 return response;
             } else {
                 Log.e(TAG, "err ctap2 status:" + authenticationResponse.getCtapStatus() + " msg:" + authenticationResponse.getCtapStatusMessage() + " fido2 status:" + authenticationResponse.getFido2Status() + " fido2 msg:" + authenticationResponse.getFido2StatusMessage());
