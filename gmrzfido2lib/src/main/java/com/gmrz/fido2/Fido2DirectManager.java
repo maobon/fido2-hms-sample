@@ -60,11 +60,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-// import com.gmrz.fido2.param.client.AuthenticatorAttestationResponse;
-// import com.gmrz.fido2.param.net.request.AttestationResultResponseRequest;
-
-// import com.gmrz.fido2.param.net.idl.ServerPublicKeyCredentialCreationOptionsResponse;
-
 public class Fido2DirectManager {
 
     private static final String TAG = "Fido2Manager";
