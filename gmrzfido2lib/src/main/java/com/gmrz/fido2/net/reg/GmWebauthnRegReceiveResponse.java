@@ -1,8 +1,8 @@
-package com.gmrz.fido2.net.gmserver;
+package com.gmrz.fido2.net.reg;
 
 import com.gmrz.fido2.net.idl.ServerPublicKeyCredentialCreationOptionsResponse;
 
-public class GmWebauthnAuthReceiveResponse {
+public class GmWebauthnRegReceiveResponse {
 
     public static class WebAuthnRequest{
         public ServerPublicKeyCredentialCreationOptionsResponse options;

@@ -1,8 +1,9 @@
-package com.gmrz.fido2.net.gmserver;
+package com.gmrz.fido2.net.auth;
 
-import com.gmrz.fido2.net.request.AttestationResultRequest;
+import com.gmrz.fido2.net.Device;
+import com.gmrz.fido2.net.request.AssertionResultRequest;
 
-public class GmWebauthnRegSendRequest {
+public class GmWebauthnAuthSendRequest {
 
     public static class Context{
         public String transNo;
@@ -11,20 +12,19 @@ public class GmWebauthnRegSendRequest {
         public String rf1;
         public String rf2;
         public String appID;
+        public String[] authType;
         public String transType;
-        public String authType;
         public String protocol;
         public Device devices;
         public String rpId;
-        public String opType;
     }
-
-    public AttestationResultRequest credentials;
-
-    public String serverData;
 
     public Context context;
 
-    public String accessToken;
+    public String serverData;
+
+    public AssertionResultRequest credentials;
+
+    public String userKey;
 
 }

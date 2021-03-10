@@ -1,19 +1,21 @@
-package com.gmrz.fido2.net.gmserver;
+package com.gmrz.fido2.net.delete;
 
-public class GmWebauthnRegReceiveRequest {
+public class GmWebauthnDel {
 
     public static class Context{
         public String transNo;
         public String userName;
-        public String rf1;
-        public String rf2;
         public String appID;
-        public String transType;
+        public String keyID;
+        public String deviceID;
         public String authType;
         public String protocol;
-        public Device devices;
+        public String transType;
+        public String rpId;
     }
 
     public Context context;
+
+    public String accessToken;
 
 }

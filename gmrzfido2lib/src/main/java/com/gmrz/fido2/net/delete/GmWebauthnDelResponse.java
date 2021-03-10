@@ -1,6 +1,6 @@
-package com.gmrz.fido2.net.gmserver;
+package com.gmrz.fido2.net.delete;
 
-public class GmWebauthnAuthSendResponse {
+public class GmWebauthnDelResponse {
 
     public int statusCode;
 

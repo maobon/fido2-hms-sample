@@ -1,6 +1,6 @@
-package com.gmrz.fido2.net.gmserver;
+package com.gmrz.fido2.net.reg;
 
-public class GmWebauthnDelResponse {
+public class GmWebauthnRegSendResponse {
 
     public int statusCode;
 

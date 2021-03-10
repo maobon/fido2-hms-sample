@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         btn_fido2reg.setOnClickListener(v -> {
             // pinWheelDialog.show();
             new Thread(() -> {
-                final Fido2DirectReInfo uacReInfo = Fido2DirectManager.getInstance().register(MainActivity.this, USERNAME, genTrans(), null);
+                final Fido2DirectReInfo uacReInfo = Fido2DirectManager.getInstance().register(MainActivity.this, USERNAME, genTrans());
                 runOnUiThread(() -> {
                     // pinWheelDialog.dismiss();
                     if (uacReInfo.status == Fido2DirectStatus.SUCCESS) {
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         btn_fido2Dereg.setOnClickListener(v -> {
             // pinWheelDialog.show();
             new Thread(() -> {
-                final Fido2DirectReInfo uacReInfo = Fido2DirectManager.getInstance().dereg(MainActivity.this, USERNAME, genTrans(), null, null);
+                final Fido2DirectReInfo uacReInfo = Fido2DirectManager.getInstance().dereg(MainActivity.this, USERNAME, genTrans(), null);
                 runOnUiThread(() -> {
                     // pinWheelDialog.dismiss();
                     if (uacReInfo.status == Fido2DirectStatus.SUCCESS) {

@@ -1,5 +1,7 @@
 package com.gmrz.fido2.net.gmserver;
 
+import com.gmrz.fido2.net.Device;
+
 public class GmWebauthnRegStatus {
 
     public static class Context{

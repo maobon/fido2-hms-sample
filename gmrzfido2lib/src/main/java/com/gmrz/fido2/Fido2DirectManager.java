@@ -13,22 +13,22 @@ import android.util.Log;
 import com.gmrz.fido2.impl.ClientApi;
 import com.gmrz.fido2.impl.ClientException;
 import com.gmrz.fido2.impl.hw.HwClient;
-import com.gmrz.fido2.net.gmserver.Device;
-import com.gmrz.fido2.net.gmserver.GmWebauthnAuthReceiveRequest;
-import com.gmrz.fido2.net.gmserver.GmWebauthnAuthReceiveResponse;
-import com.gmrz.fido2.net.gmserver.GmWebauthnAuthSendRequest;
-import com.gmrz.fido2.net.gmserver.GmWebauthnAuthSendResponse;
-import com.gmrz.fido2.net.gmserver.GmWebauthnDel;
-import com.gmrz.fido2.net.gmserver.GmWebauthnDelResponse;
-import com.gmrz.fido2.net.gmserver.GmWebauthnRegReceiveRequest;
-import com.gmrz.fido2.net.gmserver.GmWebauthnRegReceiveResponse;
-import com.gmrz.fido2.net.gmserver.GmWebauthnRegSendRequest;
-import com.gmrz.fido2.net.gmserver.GmWebauthnRegSendResponse;
+import com.gmrz.fido2.net.Device;
+import com.gmrz.fido2.net.auth.GmWebauthnAuthReceiveRequest;
+import com.gmrz.fido2.net.auth.GmWebauthnAuthReceiveResponse;
+import com.gmrz.fido2.net.auth.GmWebauthnAuthSendRequest;
+import com.gmrz.fido2.net.auth.GmWebauthnAuthSendResponse;
+import com.gmrz.fido2.net.delete.GmWebauthnDel;
+import com.gmrz.fido2.net.delete.GmWebauthnDelResponse;
 import com.gmrz.fido2.net.gmserver.GmWebauthnRegStatus;
 import com.gmrz.fido2.net.gmserver.GmWebauthnRegStatusResponse;
 import com.gmrz.fido2.net.idl.ServerPublicKeyCredentialCreationOptionsResponse;
 import com.gmrz.fido2.net.idl.ServerPublicKeyCredentialDescriptor;
 import com.gmrz.fido2.net.idl.ServerPublicKeyCredentialParameters;
+import com.gmrz.fido2.net.reg.GmWebauthnRegReceiveRequest;
+import com.gmrz.fido2.net.reg.GmWebauthnRegReceiveResponse;
+import com.gmrz.fido2.net.reg.GmWebauthnRegSendRequest;
+import com.gmrz.fido2.net.reg.GmWebauthnRegSendResponse;
 import com.gmrz.fido2.net.request.AssertionResultRequest;
 import com.gmrz.fido2.net.request.AssertionResultResponseRequest;
 import com.gmrz.fido2.net.request.AttestationResultRequest;
@@ -146,10 +146,9 @@ public class Fido2DirectManager {
      * @param activity
      * @param userName
      * @param transNo
-     * @param accessToken
      * @return
      */
-    public Fido2DirectReInfo register(Activity activity, String userName, String transNo, String accessToken) {
+    public Fido2DirectReInfo register(Activity activity, String userName, String transNo) {
         Logger.d(TAG, "register userName:" + userName + " transNo:" + transNo);
         Fido2DirectReInfo fidoReInfo = new Fido2DirectReInfo();
         fidoReInfo.status = Fido2DirectStatus.ERROR;
@@ -604,10 +603,9 @@ public class Fido2DirectManager {
      * @param userName
      * @param transNo
      * @param credentialId
-     * @param accessToken
      * @return
      */
-    public Fido2DirectReInfo dereg(Activity activity, String userName, String transNo, String credentialId, String accessToken) {
+    public Fido2DirectReInfo dereg(Activity activity, String userName, String transNo, String credentialId) {
         Logger.d(TAG, "dereg userName:" + userName + " transNo:" + transNo + " credentialId:" + credentialId);
         Fido2DirectReInfo fidoReInfo = new Fido2DirectReInfo();
         fidoReInfo.status = Fido2DirectStatus.ERROR;
@@ -615,8 +613,8 @@ public class Fido2DirectManager {
             fidoReInfo.status = Fido2DirectStatus.MAIN_THREAD_ERROR;
             return fidoReInfo;
         }
+
         GmWebauthnDel request = new GmWebauthnDel();
-        request.accessToken = accessToken;
         request.context = new GmWebauthnDel.Context();
         request.context.userName = userName;
         request.context.transNo = transNo;

@@ -1,4 +1,6 @@
-package com.gmrz.fido2.net.gmserver;
+package com.gmrz.fido2.net.support;
+
+import com.gmrz.fido2.net.Device;
 
 public class GmWebauthnSupport {
 

@@ -1,4 +1,4 @@
-package com.gmrz.fido2.net.gmserver;
+package com.gmrz.fido2.net;
 
 public class Device {
 
