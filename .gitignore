@@ -1,8 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
 .gradle/
-BiometricPrompt-P.iml
 local.properties
 app/build/
-BiometricPromptDemo.iml
 .DS_Store
 .idea/
+/direct_gmrz.iml
+/gmrzfido2lib/gmrzfido2lib.iml
