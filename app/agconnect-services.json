@@ -1,0 +1,12 @@
+{
+	"client":{
+		"cp_id":"890086000102146305",
+		"product_id":"736430079244604293",
+		"client_id":"431629720082187264",
+		"client_secret":"DB0F7E62C0A1A68B2D46E2C4F5D717A6B26E6642DBAEB7B621E0911C0F2E9095",
+		"app_id":"102750299",
+		"package_name":"com.gmrz.directsdk",
+		"api_key":"CgB6e3x9G4CnadE4XcwD+YjiZqbYx6BK6PaPat8eG02cAa+b/EuDU3Hz6mDeRXIT2cCDAi2Ty0LyYIIetZ3mXJQz"
+	},
+	"configuration_version":"1.0"
+}

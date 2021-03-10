@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#03497D</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorFloatingActionButton">#008CEE</color>
+    <color name="colorSplashBackground">#0E80C6</color>
+    <color name="colorLogin">#0980C3</color>
+    <color name="colorLoginButton">#68228B</color>
+    <color name="colorCursor">#cccccc</color>
+    <color name="head_color">#836FFF</color>
+    <color name="information_title_color">#666666</color>
+    <color name="list_bg_color">#FFF4F4F4</color>
+    <color name="list_focus_color">#bdbdbd</color>
+    <color name="logoScreenBackground">#F7F7F7</color>
+    <color name="dialog_bg">#f5f5f5</color>
+
+    <drawable name="checkbox">#666666</drawable>
+    <drawable name="camera_back_press">#1b1b1b</drawable>
+    <drawable name="camera_back_default">#2f2f2f</drawable>
+
+    <color name="blue">#ff336699</color>
+    <color name="brown">#ff993700</color>
+    <color name="dark_blue">#ff003366</color>
+    <color name="grey">#ff393939</color>
+    <color name="half_grey">#ff565656</color>
+    <color name="dark_grey">#ff767676</color>
+    <color name="black">#ff000000</color>
+    <color name="light_black">#ff202020</color>
+    <color name="white">#ffffffff</color>
+    <color name="yellow">#ffffde00</color>
+    <color name="orange">#fffa9e27</color>
+    <color name="mid_gray">#ffe4e4e4</color>
+    <color name="light_gray">#ffd3d3d3</color>
+    <color name="red">#ffff0000</color>
+    <color name="light_blue">#ff698eb4</color>
+    <color name="text_highlighted">#ff7c2d00</color>
+    <color name="text_grey">#ff9c9c9c</color>
+    <color name="text_dark_grey">#ff6d6d6d</color>
+    <color name="about_text_light_gray">#ffa6a6a6</color>
+    <color name="text_green">#ff1c7d14</color>
+    <color name="trans">#00000000</color>
+    <color name="text_black">#ff000000</color>
+
+    <color name="float_transparent">#00000000</color>
+    <color name="sweet_dialog_bg_color">#FFFFFF</color>
+    <color name="button_text_color">#FFFFFF</color>
+    <color name="gray_btn_bg_color">#D0D0D0</color>
+    <color name="gray_btn_bg_pressed_color">#B6B6B6</color>
+    <color name="blue_btn_bg_color">#AEDEF4</color>
+    <color name="blue_btn_bg_pressed_color">#96BFD2</color>
+    <color name="red_btn_bg_color">#DD6B55</color>
+    <color name="red_btn_bg_pressed_color">#CD5B55</color>
+    <color name="error_stroke_color">#F27474</color>
+    <color name="success_stroke_color">#A5DC86</color>
+    <color name="trans_success_stroke_color">#33A5DC86</color>
+    <color name="warning_stroke_color">#F8BB86</color>
+    <color name="text_color1">#575757</color>
+    <color name="material_blue_grey_80">#ff37474f</color>
+    <color name="material_blue_grey_90">#ff263238</color>
+    <color name="material_blue_grey_95">#ff21272b</color>
+    <color name="material_deep_teal_20">#ff80cbc4</color>
+    <color name="material_deep_teal_50">#ff009688</color>
+
+    <color name="ripple_red">#ffbf5232</color>
+    <color name="base">#5F9EA0</color>
+</resources>
